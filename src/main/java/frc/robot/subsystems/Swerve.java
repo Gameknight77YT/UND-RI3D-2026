@@ -297,7 +297,7 @@ public class Swerve extends SubsystemBase {
         return m_poseEstimator.getEstimatedPosition().getRotation().getDegrees();
     }
 
-    public double calculateShuttleAngle(){
+    /*public double calculateShuttleAngle(){
         double xPos = m_poseEstimator.getEstimatedPosition().getX();
         double yPos = m_poseEstimator.getEstimatedPosition().getY();
 
@@ -362,7 +362,7 @@ public class Swerve extends SubsystemBase {
         }
 
         return 0;
-    }
+    }*/
 
 
     public void updateOdometry() {
@@ -446,9 +446,9 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("Drivetrain y position", m_poseEstimator.getEstimatedPosition().getY());
 
-        SmartDashboard.putNumber("Shuttle distance", calculateShuttleDistance());
+        //SmartDashboard.putNumber("Shuttle distance", calculateShuttleDistance());
 
-        SmartDashboard.putNumber("Shuttle angle", calculateShuttleAngle());
+        //SmartDashboard.putNumber("Shuttle angle", calculateShuttleAngle());
 
 
         for(SwerveModule mod : mSwerveMods){
