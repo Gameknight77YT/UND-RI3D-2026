@@ -130,4 +130,7 @@ public static final class Swerve {
         }
     }
 
+    public static final class Swerve{
+        
+    }
 }
