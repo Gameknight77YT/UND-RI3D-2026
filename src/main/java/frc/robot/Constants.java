@@ -24,6 +24,10 @@ public class Constants {
     public static final double bottomShooterMotorPIDI = 0.0;
     public static final double bottomShooterMotorPIDD = 0.0;
 
+    public static final double shooterAutoAimP = 0.1;
+    public static final double shooterAutoAimI = 0.0;
+    public static final double shooterAutoAimD = 0.0;
+
 
     public static final double topSchooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}}; //First array is distance values in meters to the goal, second array is target values for the shooter
     public static final double bottomSchooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}};

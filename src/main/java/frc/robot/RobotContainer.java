@@ -33,7 +33,7 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Swerve swerve = new Swerve();
-  private final Shooter shooter = new Shooter(swerve::getPosEstimate);
+  private final Shooter shooter = new Shooter(swerve::getEstimatedPosition);
   private final Intake intake = new Intake();
   private final HopperExtender hopperExtender = new HopperExtender();
   
@@ -44,7 +44,9 @@ public class RobotContainer {
                 () -> driverController.getRawAxis(translationAxis),
                 () -> driverController.getRawAxis(strafeAxis),
                 () -> -driverController.getRawAxis(rotationAxis),               
-                driverController.x()/*,
+                driverController.x(),
+                driverController.rightBumper()
+                /*,
                 mShooterLimelight,
                 mIntakeLimelight*/
             )

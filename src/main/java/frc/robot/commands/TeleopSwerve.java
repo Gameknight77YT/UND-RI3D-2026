@@ -274,8 +274,11 @@
 
 package frc.robot.commands;
 
+import frc.robot.AllianceUtil;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
+
+import static edu.wpi.first.units.Units.Degrees;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -284,6 +287,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -298,6 +303,7 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
+    private BooleanSupplier aimTowardGoalSup;
     double rotationCorrect = 0;
     double previousYaw;
     double currentYaw;
@@ -306,6 +312,13 @@ public class TeleopSwerve extends Command {
     double previousRotation = 0;
     double commandedRotationVal = 0;
     double rotationVal = 0;
+
+    double angleToGoal = 0;
+
+    Pose2d currentPos = new Pose2d(
+        new Translation2d(0.0, 0.0),
+        new Rotation2d()
+    );
 
     //private final ShooterLimelight mShooterLimelight;
 
@@ -316,6 +329,8 @@ public class TeleopSwerve extends Command {
 
     private final Joystick driverJoystick = new Joystick(0);
 
+    private final PIDController rotationPID = new PIDController(Constants.shooterAutoAimP, Constants.shooterAutoAimI, Constants.shooterAutoAimD);
+
     //private final MathEquations mathEquations = new MathEquations();
 
 
@@ -325,18 +340,21 @@ public class TeleopSwerve extends Command {
     double kD = 0;
 
     private final MiniPID mPID = new MiniPID(kP, kI, kD);
-
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
-        DoubleSupplier rotationSup, BooleanSupplier robotCentricSup/*, 
-        ShooterLimelight shooterLimelight, IntakeLimelight intakeLimelight*/) {
-        this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve);
-
-        this.translationSup = translationSup;
-        this.strafeSup = strafeSup;
-        this.rotationSup = rotationSup;
-        this.robotCentricSup = robotCentricSup;
+        
+    
+        public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
+            DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier aimTowardGoalSup/*, 
+            ShooterLimelight shooterLimelight, IntakeLimelight intakeLimelight*/) {
+            this.s_Swerve = s_Swerve;
+            addRequirements(s_Swerve);
+    
+            this.translationSup = translationSup;
+            this.strafeSup = strafeSup;
+            this.rotationSup = rotationSup;
+            this.robotCentricSup = robotCentricSup;
+            this.aimTowardGoalSup = aimTowardGoalSup;
         currentYaw = s_Swerve.getGyroYaw().getDegrees();
+        currentPos = s_Swerve.getEstimatedPosition();
         //mShooterLimelight = shooterLimelight;
         //mIntakeLimelight = intakeLimelight;
 
@@ -348,6 +366,17 @@ public class TeleopSwerve extends Command {
 
 
         
+    }
+
+    public Angle getAngleToGoal(){
+        Pose2d robotPos = s_Swerve.getEstimatedPosition();
+        Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
+
+        return goalPos
+            .relativeTo(robotPos)
+            .getTranslation()
+            .getAngle()
+            .getMeasure();
     }
                             
 
@@ -391,9 +420,6 @@ public class TeleopSwerve extends Command {
             counter += 1;
             if (counter > 5000){
                 break;
-
-
-
             }
         }
 
@@ -437,6 +463,17 @@ public class TeleopSwerve extends Command {
             }
             rotationVal = rotationCorrect;
         }
+
+        if (aimTowardGoalSup.getAsBoolean() == true){
+            angleToGoal = getAngleToGoal().in(Degrees);
+            rotationVal = rotationPID.calculate(
+                angleToGoal,
+                0 //our target angle is zero because we are trying to make angle to goal value 0
+            );
+        }
+
+        if (rotationVal > 1){rotationVal = 1;}
+        if (rotationVal < -1){rotationVal = -1;}
 
         boolean robotCentric = !robotCentricSup.getAsBoolean();
 

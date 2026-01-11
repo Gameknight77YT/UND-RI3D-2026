@@ -297,9 +297,6 @@ public class Swerve extends SubsystemBase {
         return m_poseEstimator.getEstimatedPosition().getRotation().getDegrees();
     }
 
-    public Pose2d getPosEstimate(){
-        return m_poseEstimator.getEstimatedPosition();
-    }
 
     /*public double calculateShuttleAngle(){
         double xPos = m_poseEstimator.getEstimatedPosition().getX();
