@@ -28,7 +28,7 @@ public class HopperExtender extends SubsystemBase {
   private double targetPosition = 0.0;
   /** Creates a new HopperExtender. */
   public HopperExtender() {
-    motor = new SparkFlex(Constants.IntakeMotorID, MotorType.kBrushless);
+    motor = new SparkFlex(Constants.hopperMotorID, MotorType.kBrushless);
     closedLoopController = motor.getClosedLoopController();
     encoder = motor.getEncoder();
     motorConfig = new SparkFlexConfig();
@@ -65,7 +65,7 @@ public class HopperExtender extends SubsystemBase {
     if(setTargetPosition > Constants.hopperExtenderFullExtendedEncoderPosition){setTargetPosition = Constants.hopperExtenderFullExtendedEncoderPosition;}
     if(setTargetPosition < Constants.hopperExtenderFullExtendedEncoderPosition){setTargetPosition = Constants.hopperExtenderFullRetractedEncoderPosition;}
     targetPosition = setTargetPosition;
-    closedLoopController.setReference(setTargetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    closedLoopController.setSetpoint(setTargetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
     return setTargetPosition;
     }
@@ -81,7 +81,6 @@ public class HopperExtender extends SubsystemBase {
   public double GetTargetPosition(){
     return targetPosition;
   }
-
 
   @Override
   public void periodic() {
