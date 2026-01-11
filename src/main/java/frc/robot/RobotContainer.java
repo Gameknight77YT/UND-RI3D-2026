@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
@@ -52,12 +55,15 @@ public class RobotContainer {
   private void configureBindings() {
     /* Drive Controller Bindings */
     driverController.y().onTrue(Commands.runOnce(() -> swerve.zeroHeading()));
-    
-    driverController.rightBumper().whileTrue(
+
+    driverController.rightTrigger(.1).whileTrue(
       intake.runEnd(
         () -> intake.RunIntake(Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
       ));
+
+     
+
     /* Manipulator Controller Bindings */
     manipulatorController.a().whileTrue(
       shooter.runEnd(
@@ -66,6 +72,8 @@ public class RobotContainer {
     ));
 
   }
+
+  
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
