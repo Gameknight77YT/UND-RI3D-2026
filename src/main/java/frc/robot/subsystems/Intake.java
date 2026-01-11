@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -25,37 +26,24 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder encoder;
   /** Creates a new Intake. */
   public Intake() {
-    motor = new SparkFlex(1, MotorType.kBrushless);
-    closedLoopController = motor.getClosedLoopController();
-    encoder = motor.getEncoder();
+    motor = new SparkFlex(Constants.IntakeMotorID, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
 
-    motorConfig.encoder
-    .positionConversionFactor(1)
-    .velocityConversionFactor(1);
-
-    motorConfig.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        // Set PID values for position control. We don't need to pass a closed loop
-        // slot, as it will default to slot 0.
-        .p(0.1)
-        .i(0)
-        .d(0)
-        .outputRange(-1, 1)
-        // Set PID values for velocity control in slot 1
-        .p(0.0001, ClosedLoopSlot.kSlot1)
-        .i(0, ClosedLoopSlot.kSlot1)
-        .d(0, ClosedLoopSlot.kSlot1)
-        .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
-        .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
     
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-    closedLoopController.setReference(targetVelocity, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+    
   }
+
+  public void RunIntake(double intakeSpeed){
+      motor.set(intakeSpeed);
+    }
+  public void StopMotor(){
+      motor.stopMotor();
+    }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
   }
 }
