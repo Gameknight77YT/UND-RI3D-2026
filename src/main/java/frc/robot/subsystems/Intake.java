@@ -8,37 +8,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.FeedbackSensor;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class Intake extends SubsystemBase {
-  private SparkFlex motor;
-  private SparkMaxConfig motorConfig;
-  private SparkClosedLoopController closedLoopController;
-  private RelativeEncoder encoder;
+  private TalonFX intakeMotor = new TalonFX(Constants.IntakeMotorID);
+  
+  private TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
+
   /** Creates a new Intake. */
   public Intake() {
-    motor = new SparkFlex(Constants.IntakeMotorID, MotorType.kBrushless);
-    motorConfig = new SparkMaxConfig();
+    intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    intakeConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    
-    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    intakeMotor.getConfigurator().apply(intakeConfig);
     
   }
 
   public void RunIntake(double intakeSpeed){
-      motor.set(intakeSpeed);
+      intakeMotor.set(intakeSpeed);
     }
   public void StopMotor(){
-      motor.stopMotor();
+      intakeMotor.stopMotor();
     }
 
   @Override
