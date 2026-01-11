@@ -75,20 +75,27 @@ public class Shooter extends SubsystemBase {
   public void updateInterpolatedSpeeds() {
     topSpeedInterpolatedRPM = topShooterMap.get(targetDistanceMeters);
     bottomSpeedInterpolatedRPM = bottomShooterMap.get(targetDistanceMeters);
-
-    
   }
 
-
+  public void setShooterSpeedsInterpolated() {
+    
+    setShooterSpeeds(topSpeedInterpolatedRPM, bottomSpeedInterpolatedRPM);
+  }
 
   public void setShooterSpeeds(double topShooterSpeedRPM, double bottomShooterSpeed) {
     TopShooterMotor.setControl(topVelocityVoltage.withVelocity(topShooterSpeedRPM));
     BottomShooterMotor.setControl(bottomVelocityVoltage.withVelocity(bottomShooterSpeed));
   }
 
+  public void stopShooter() {
+    TopShooterMotor.stopMotor();
+    BottomShooterMotor.stopMotor();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateInterpolatedSpeeds();
 
     SmartDashboard.putNumber("Top Shooter Velocity RPM", TopShooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
     SmartDashboard.putNumber("Bottom Shooter Velocity RPM", BottomShooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));

@@ -13,11 +13,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
-  private final CommandXboxController driveController = new CommandXboxController(0);
-  private final CommandJoystick manipulatorController = new CommandJoystick(1);
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController manipulatorController = new CommandXboxController(1);
  
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -26,16 +27,17 @@ public class RobotContainer {
 
 
   /* Subsystems */
-  private final Swerve s_Swerve = new Swerve();
+  private final Swerve swerve = new Swerve();
+  private final Shooter shooter = new Shooter();
   
   public RobotContainer() {
-    s_Swerve.setDefaultCommand(
+    swerve.setDefaultCommand(
             new TeleopSwerve(
-                s_Swerve, 
-                () -> driveController.getRawAxis(translationAxis),
-                () -> driveController.getRawAxis(strafeAxis),
-                () -> -driveController.getRawAxis(rotationAxis),               
-                driveController.x()/*,
+                swerve, 
+                () -> driverController.getRawAxis(translationAxis),
+                () -> driverController.getRawAxis(strafeAxis),
+                () -> -driverController.getRawAxis(rotationAxis),               
+                driverController.x()/*,
                 mShooterLimelight,
                 mIntakeLimelight*/
             )
@@ -47,8 +49,15 @@ public class RobotContainer {
 
   private void configureBindings() {
     /* Drive Controller Bindings */
-    driveController.y().onTrue(Commands.runOnce(() -> s_Swerve.zeroHeading()));
+    driverController.y().onTrue(Commands.runOnce(() -> swerve.zeroHeading()));
+    
     /* Manipulator Controller Bindings */
+    manipulatorController.a().whileTrue(
+      shooter.runEnd(
+        () -> shooter.setShooterSpeedsInterpolated(), 
+        () -> shooter.stopShooter()
+    ));
+
   }
 
   public Command getAutonomousCommand() {
