@@ -61,9 +61,15 @@ public class Shooter extends SubsystemBase {
     TopShooterMotor.getConfigurator().apply(topShooterConfig);
     BottomShooterMotor.getConfigurator().apply(bottomShooterConfig);
     
+    for(int i = 0; i < Constants.topSchooterMapPoints.length; i++){
+      topShooterMap.put(Constants.topSchooterMapPoints[i][0], Constants.topSchooterMapPoints[i][1]);
+    }
+    for(int i = 0; i < Constants.bottomSchooterMapPoints.length; i++){
+      bottomShooterMap.put(Constants.bottomSchooterMapPoints[i][0], Constants.bottomSchooterMapPoints[i][1]);
+    }
     // Populate shooter maps
-    //TODO: topShooterMap.put(0,0);
-    //TODO: bottomShooterMap.put(0,0);
+    //TODO: topShooterMap.put(0,0); done 
+    //TODO: bottomShooterMap.put(0,0); done
 
       
   }

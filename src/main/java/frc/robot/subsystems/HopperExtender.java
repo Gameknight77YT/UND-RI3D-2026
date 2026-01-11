@@ -57,7 +57,8 @@ public class HopperExtender extends SubsystemBase {
       .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
     
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    
+
+    ResetEncoder();
   }
 
   public double SetPositionTarget(double setTargetPosition){
@@ -82,8 +83,14 @@ public class HopperExtender extends SubsystemBase {
     return targetPosition;
   }
 
+  public double GetCurrentPosition(){
+    return encoder.getPosition();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Hopper Extender Position", GetCurrentPosition());
+    SmartDashboard.putNumber("Hopper Extender Target Position", GetTargetPosition());
   }
 }
