@@ -92,10 +92,8 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-
+        
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
-
-        //this.configurePathPlanner();
 
         m_poseEstimator = new SwerveDrivePoseEstimator(
           m_kinematics,
@@ -297,7 +295,7 @@ public class Swerve extends SubsystemBase {
         return m_poseEstimator.getEstimatedPosition().getRotation().getDegrees();
     }
 
-    /*public double calculateShuttleAngle(){
+    public double calculateShuttleAngle(){
         double xPos = m_poseEstimator.getEstimatedPosition().getX();
         double yPos = m_poseEstimator.getEstimatedPosition().getY();
 
@@ -362,7 +360,7 @@ public class Swerve extends SubsystemBase {
         }
 
         return 0;
-    }*/
+    }
 
 
     public void updateOdometry() {
