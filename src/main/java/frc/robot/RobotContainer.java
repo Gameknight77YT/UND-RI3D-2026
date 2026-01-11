@@ -53,9 +53,15 @@ public class RobotContainer {
     /* Drive Controller Bindings */
     driverController.y().onTrue(Commands.runOnce(() -> swerve.zeroHeading()));
     
-    driverController.rightBumper().whileTrue(
+    driverController.rightBumper().whileTrue( //Run intake forward
       intake.runEnd(
         () -> intake.RunIntake(Constants.intakeMotorPercentPower),
+        () -> intake.StopMotor()
+      ));
+
+    driverController.leftBumper().whileTrue( //Run intake in reverse
+      intake.runEnd(
+        () -> intake.RunIntake(-Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
       ));
     /* Manipulator Controller Bindings */
