@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -43,6 +44,7 @@ public class Shooter extends SubsystemBase {
   private VelocityVoltage bottomVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
   private double targetDistanceMeters = 0.0;
+  private Angle targetRelativeAngle = Angle.ofBaseUnits(0, Degree);
 
   private double topSpeedInterpolatedRPM = 0.0;
   private double bottomSpeedInterpolatedRPM = 0.0;
@@ -102,14 +104,15 @@ public class Shooter extends SubsystemBase {
             .getNorm();
     }
 
-  public Rotation2d getAngleToGoal(){
+  public Angle getAngleToGoal(){
     Pose2d robotPos = poseSupplier.get();
     Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
 
     return goalPos
         .relativeTo(robotPos)
         .getTranslation()
-        .getAngle();
+        .getAngle()
+        .getMeasure();
   }
 
   public void setShooterSpeedsInterpolated() {
@@ -130,6 +133,9 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    targetDistanceMeters = getDistToGoal();
+    targetRelativeAngle = getAngleToGoal();
+
     updateInterpolatedSpeeds();
 
     SmartDashboard.putNumber("Top Shooter Velocity RPM", TopShooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
