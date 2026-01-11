@@ -25,8 +25,8 @@ public class Constants {
     public static final double bottomShooterMotorPIDD = 0.0;
 
 
-    public static final double topSchooterMapPoints[][] = {{1, 2, 3}, {0.2, 0.4, 0.6}}; //First array is distance values in meters to the goal, second array is target values for the shooter
-    public static final double bottomSchooterMapPoints[][] = {{1, 2, 3}, {0.2, 0.4, 0.6}};
+    public static final double topSchooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}}; //First array is distance values in meters to the goal, second array is target values for the shooter
+    public static final double bottomSchooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}};
 
     public static final int IntakeMotorID = 16;
     public static final double intakeMotorPercentPower = 0.5;

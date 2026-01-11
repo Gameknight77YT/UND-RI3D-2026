@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -89,6 +90,11 @@ public class HopperExtender extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    if(DriverStation.isDisabled()){
+      targetPosition = encoder.getPosition();
+    }
+
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Hopper Extender Position", GetCurrentPosition());
     SmartDashboard.putNumber("Hopper Extender Target Position", GetTargetPosition());
