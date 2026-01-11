@@ -18,6 +18,8 @@ public class Constants {
     public static final int TopSchooterMotorID = 14;
     public static final int BottomShooterMotorID = 15;
 
+    public static final int IntakeMotorID = 16;
+    public static final double intakeMotorPercentPower = 0.5;
     
 
     

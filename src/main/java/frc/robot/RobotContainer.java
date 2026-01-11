@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
@@ -29,6 +30,7 @@ public class RobotContainer {
   /* Subsystems */
   private final Swerve swerve = new Swerve();
   private final Shooter shooter = new Shooter();
+  private final Intake intake = new Intake();
   
   public RobotContainer() {
     swerve.setDefaultCommand(
@@ -51,6 +53,11 @@ public class RobotContainer {
     /* Drive Controller Bindings */
     driverController.y().onTrue(Commands.runOnce(() -> swerve.zeroHeading()));
     
+    driverController.rightBumper().whileTrue(
+      intake.runEnd(
+        () -> intake.RunIntake(Constants.intakeMotorPercentPower),
+        () -> intake.StopMotor()
+      ));
     /* Manipulator Controller Bindings */
     manipulatorController.a().whileTrue(
       shooter.runEnd(
