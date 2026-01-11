@@ -26,7 +26,8 @@ public class Constants {
     public static final double hopperExtenderPIDD = 0.0;
     public static final double hopperExtenderFullExtendedEncoderPosition = 0.0;
     public static final double hopperExtenderFullRetractedEncoderPosition = 20.0;
-    
+    public static final double hopperExtenderEntensionPosIncrement = 0.05;
+    public static final double hopperExtenderRetractionPosIncrement = -0.05;
 
     
 public static final class Swerve {

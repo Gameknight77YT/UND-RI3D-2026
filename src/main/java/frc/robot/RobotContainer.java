@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.HopperExtender;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
@@ -34,6 +35,7 @@ public class RobotContainer {
   private final Swerve swerve = new Swerve();
   private final Shooter shooter = new Shooter();
   private final Intake intake = new Intake();
+  private final HopperExtender hopperExtender = new HopperExtender();
   
   public RobotContainer() {
     swerve.setDefaultCommand(
@@ -72,6 +74,16 @@ public class RobotContainer {
       shooter.runEnd(
         () -> shooter.setShooterSpeedsInterpolated(), 
         () -> shooter.stopShooter()
+    ));
+
+    manipulatorController.rightBumper().whileTrue(
+      hopperExtender.run(
+        () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderEntensionPosIncrement)
+    ));
+
+    manipulatorController.leftBumper().whileTrue(
+      hopperExtender.run(
+        () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderRetractionPosIncrement)
     ));
 
   }

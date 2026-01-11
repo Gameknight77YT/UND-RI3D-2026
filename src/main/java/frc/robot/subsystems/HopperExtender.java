@@ -69,6 +69,11 @@ public class HopperExtender extends SubsystemBase {
 
     return setTargetPosition;
     }
+  public double IncrementPositionTarget(double posIncrement){
+    targetPosition = targetPosition + posIncrement;
+    SetPositionTarget(targetPosition);
+    return targetPosition;
+  }
   public void ResetEncoder(){
       encoder.setPosition(0);
     }
