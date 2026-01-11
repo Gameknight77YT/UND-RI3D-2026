@@ -17,6 +17,13 @@ public class Constants {
     // Motor IDs
     public static final int TopSchooterMotorID = 14;
     public static final int BottomShooterMotorID = 15;
+    public static final double topShooterMotorPIDP = 0.1;
+    public static final double topShooterMotorPIDI = 0.0;
+    public static final double topShooterMotorPIDD = 0.0;
+    public static final double bottomShooterMotorPIDP = 0.1;
+    public static final double bottomShooterMotorPIDI = 0.0;
+    public static final double bottomShooterMotorPIDD = 0.0;
+
 
     public static final double topSchooterMapPoints[][] = {{1, 2, 3}, {0.2, 0.4, 0.6}}; //First array is distance values in meters to the goal, second array is target values for the shooter
     public static final double bottomSchooterMapPoints[][] = {{1, 2, 3}, {0.2, 0.4, 0.6}};

@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,13 +15,19 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Swerve;
+import frc.robot.AllianceUtil;
 
 public class Shooter extends SubsystemBase {
+  private final Supplier<Pose2d> poseSupplier;
+
   private TalonFX TopShooterMotor = new TalonFX(Constants.TopSchooterMotorID);
   private TalonFX BottomShooterMotor = new TalonFX(Constants.BottomShooterMotorID);
 
@@ -40,7 +48,8 @@ public class Shooter extends SubsystemBase {
   private double bottomSpeedInterpolatedRPM = 0.0;
 
   /** Creates a new Shooter. */
-  public Shooter() {
+  public Shooter(Supplier<Pose2d> poseSupplier) {
+    this.poseSupplier = poseSupplier;
     topShooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     topShooterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
@@ -81,6 +90,26 @@ public class Shooter extends SubsystemBase {
   public void updateInterpolatedSpeeds() {
     topSpeedInterpolatedRPM = topShooterMap.get(targetDistanceMeters);
     bottomSpeedInterpolatedRPM = bottomShooterMap.get(targetDistanceMeters);
+  }
+
+  public double getDistToGoal(){
+    Pose2d robotPos = poseSupplier.get();
+    Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
+
+    return goalPos
+            .relativeTo(robotPos)
+            .getTranslation()
+            .getNorm();
+    }
+
+  public Rotation2d getAngleToGoal(){
+    Pose2d robotPos = poseSupplier.get();
+    Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
+
+    return goalPos
+        .relativeTo(robotPos)
+        .getTranslation()
+        .getAngle();
   }
 
   public void setShooterSpeedsInterpolated() {

@@ -33,7 +33,7 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Swerve swerve = new Swerve();
-  private final Shooter shooter = new Shooter();
+  private final Shooter shooter = new Shooter(swerve::getPosEstimate);
   private final Intake intake = new Intake();
   private final HopperExtender hopperExtender = new HopperExtender();
   
@@ -88,9 +88,8 @@ public class RobotContainer {
 
   }
 
-  
-
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+
 }
