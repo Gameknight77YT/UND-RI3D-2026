@@ -20,6 +20,12 @@ public class Constants {
 
     public static final int IntakeMotorID = 16;
     public static final double intakeMotorPercentPower = 0.5;
+
+    public static final double hopperExtenderPIDP = 0.1;
+    public static final double hopperExtenderPIDI = 0.0;
+    public static final double hopperExtenderPIDD = 0.0;
+    public static final double hopperExtenderFullExtendedEncoderPosition = 0.0;
+    public static final double hopperExtenderFullRetractedEncoderPosition = 20.0;
     
 
     
