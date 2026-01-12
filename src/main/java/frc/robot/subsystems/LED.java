@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LED extends SubsystemBase {
@@ -14,17 +18,38 @@ private static final double MAX_SYSTEM_CURRENT_A = 2.0;          // maximum allo
 private static final double PER_COLOR_CURRENT_A = 0.02;         // 20 mA per color channel at full (A)
 
 private AddressableLED led = new AddressableLED(0);
-private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(300); 
+private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(5); 
+
+// Create an LED pattern that will display a rainbow across
+  // all hues at maximum saturation and half brightness
+  private final LEDPattern m_rainbow = LEDPattern.rainbow(255, 128);
+
+  // Our LED strip has a density of 60 LEDs per meter
+  private static final Distance kLedSpacing = Meters.of(1 / 60.0);
+
+  // Create a new pattern that scrolls the rainbow pattern across the LED strip, moving at a speed
+  // of 1 meter per second.
+  private final LEDPattern scrollingRainbow =
+      m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
 
 public LED() {
-led.setLength(ledBuffer.getLength());   
+    led.setLength(ledBuffer.getLength());   
 
-// default color: full green (will be scaled to respect current limit)
-setColor(0, 255, 0);
+    // default color: full green (will be scaled to respect current limit)
+    //setColor(0, 255, 0);
 
-led.setData(ledBuffer);
-led.start();
-  }
+    led.setData(ledBuffer);
+    led.start();
+}
+
+
+@Override
+public void periodic() {
+    // Update the buffer with the rainbow animation
+    scrollingRainbow.applyTo(ledBuffer);
+    // Set the LEDs
+    led.setData(ledBuffer);
+}
 
 /**
  * Set the LED strip to an RGB color, but scale the RGB values so total
