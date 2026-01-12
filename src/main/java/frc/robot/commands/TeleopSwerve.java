@@ -371,7 +371,7 @@ public class TeleopSwerve extends Command {
         
     }
 
-    public Angle getAngleToGoal(){
+    public double getAngleToGoal(){
         Pose2d robotPos = s_Swerve.getEstimatedPosition();
         Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
 
@@ -379,7 +379,8 @@ public class TeleopSwerve extends Command {
             .relativeTo(robotPos)
             .getTranslation()
             .getAngle()
-            .getMeasure();
+            .getMeasure()
+            .in(Degrees);
     }
 
     public double getDistToGoal(){
@@ -478,7 +479,7 @@ public class TeleopSwerve extends Command {
         }
 
         if (aimTowardGoalSup.getAsBoolean()){
-            angleToGoal = getAngleToGoal().in(Degrees);
+            angleToGoal = getAngleToGoal();
             distToGoal = getDistToGoal();
             correctedAngleToGoal = Math.atan2(distToGoal, Constants.shooterBotOffset) + angleToGoal; // to correct for the shooter being offset form the center of the bot
             rotationVal = rotationPID.calculate(
@@ -526,7 +527,7 @@ public class TeleopSwerve extends Command {
         /* Drive */
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
-            rotationVal * Constants.Swerve.maxAngularVelocity, 
+            rotationVal * Constants.Swerve.angularVelocityMultiplier, 
             robotCentric, 
             true
         );

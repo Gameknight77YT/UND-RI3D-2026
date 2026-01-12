@@ -119,7 +119,7 @@ public static final class Swerve {
         /** Meters per Second */
         public static final double maxSpeed = 5.76; //TODO: This must be tuned to specific robot
         /** Radians per Second */
-        public static final double maxAngularVelocity = 5.0; //TODO: This must be tuned to specific robot
+        public static final double angularVelocityMultiplier = 5.0; //TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;

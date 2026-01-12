@@ -43,7 +43,6 @@ public class Shooter extends SubsystemBase {
   private VelocityVoltage shooterVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
   private double targetDistanceMeters = 0.0;
-  private Angle targetRelativeAngle = Angle.ofBaseUnits(0, Degree);
 
   private double speedInterpolatedRPM = 0.0;
 
@@ -103,16 +102,6 @@ public class Shooter extends SubsystemBase {
             .getNorm();
     }
 
-  public Angle getAngleToGoal(){
-    Pose2d robotPos = poseSupplier.get();
-    Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
-
-    return goalPos
-        .relativeTo(robotPos)
-        .getTranslation()
-        .getAngle()
-        .getMeasure();
-  }
 
   public void setShooterSpeedsInterpolated() {
     setShooterSpeed(speedInterpolatedRPM);
@@ -147,7 +136,6 @@ public class Shooter extends SubsystemBase {
     if (targetDistanceMeters < Constants.minimumDistToGoal || targetDistanceMeters > Constants.maxDistToGoal){
       targetDistanceMeters = Constants.defaultDistToGoal;
     }
-    targetRelativeAngle = getAngleToGoal();
 
     updateInterpolatedSpeeds();
 
