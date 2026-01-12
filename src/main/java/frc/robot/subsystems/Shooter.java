@@ -21,6 +21,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
@@ -28,6 +29,8 @@ import frc.robot.AllianceUtil;
 
 public class Shooter extends SubsystemBase {
   private final Supplier<Pose2d> poseSupplier;
+  
+  private boolean isRunning = false;
 
   private TalonFX shooterMotor = new TalonFX(Constants.shooterMotorID, Constants.CanBus);
 
@@ -112,7 +115,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterSpeedsInterpolated() {
-    
     setShooterSpeed(speedInterpolatedRPM);
   }
 
@@ -121,10 +123,22 @@ public class Shooter extends SubsystemBase {
       shooterSpeedRPM = Constants.shooterMaxRPM;
     }
     shooterMotor.setControl(shooterVelocityVoltage.withVelocity(shooterSpeedRPM));
+    isRunning = true;
   }
 
   public void stopShooter() {
     shooterMotor.stopMotor();
+    isRunning = false;
+  }
+
+  public Command shooterToggleCommand() {
+    return runOnce(() -> {
+      if (isRunning) {
+        stopShooter();
+      } else {
+        setShooterSpeed(speedInterpolatedRPM);
+      }
+    });
   }
 
   @Override
@@ -137,6 +151,8 @@ public class Shooter extends SubsystemBase {
     targetRelativeAngle = getAngleToGoal();
 
     updateInterpolatedSpeeds();
+
+
 
     SmartDashboard.putNumber("Top Shooter Velocity RPM", shooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
 

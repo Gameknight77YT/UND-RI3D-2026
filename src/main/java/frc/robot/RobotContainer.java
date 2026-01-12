@@ -75,19 +75,33 @@ public class RobotContainer {
         () -> intake.RunIntake(-Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
       ));
+      
     /* Manipulator Controller Bindings */
-    manipulatorController.leftTrigger(.1).whileTrue(
-      shooter.runEnd(
-        () -> shooter.setShooterSpeed(1000), 
-        () -> shooter.stopShooter()
-    ));
-
     manipulatorController.rightTrigger(.1).whileTrue(
       feeder.runEnd(
         () -> feeder.feed(Constants.feederSpeed), 
         () -> feeder.stopFeeder()
         )
     );
+
+
+    manipulatorController.leftTrigger(.1).whileTrue(
+      shooter.runEnd(
+        () -> shooter.setShooterSpeed(1000), 
+        () -> shooter.stopShooter()
+    ));
+    //Code that we should use to control shooter with toggle
+
+    /*
+    manipulatorController.leftTrigger(.1).onTrue(
+      Commands.runOnce(() -> shooter.shooterToggleCommand())
+    );
+    */
+
+
+
+
+
 
     //manipulatorController.rightBumper().whileTrue(
     //  hopperExtender.run(
