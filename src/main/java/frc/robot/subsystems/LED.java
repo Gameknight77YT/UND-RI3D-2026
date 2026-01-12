@@ -18,7 +18,7 @@ private static final double MAX_SYSTEM_CURRENT_A = 2.0;          // maximum allo
 private static final double PER_COLOR_CURRENT_A = 0.02;         // 20 mA per color channel at full (A)
 
 private AddressableLED led = new AddressableLED(0);
-private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(5); 
+private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(300-13); 
 
 // Create an LED pattern that will display a rainbow across
   // all hues at maximum saturation and half brightness
@@ -36,7 +36,7 @@ public LED() {
     led.setLength(ledBuffer.getLength());   
 
     // default color: full green (will be scaled to respect current limit)
-    //setColor(0, 255, 0);
+    setColor(0, 255, 0);
 
     led.setData(ledBuffer);
     led.start();
@@ -46,7 +46,7 @@ public LED() {
 @Override
 public void periodic() {
     // Update the buffer with the rainbow animation
-    scrollingRainbow.applyTo(ledBuffer);
+   // scrollingRainbow.applyTo(ledBuffer);
     // Set the LEDs
     led.setData(ledBuffer);
 }
