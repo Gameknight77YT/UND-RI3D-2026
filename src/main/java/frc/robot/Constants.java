@@ -49,6 +49,7 @@ public class Constants {
     public static final double feederSpeed = .95;
     
     public static final double currentLimit = 35;
+    public static final double shooterMaxRPM = 2000;
 
     
 public static final class Swerve {

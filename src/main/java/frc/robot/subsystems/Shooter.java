@@ -49,6 +49,8 @@ public class Shooter extends SubsystemBase {
     this.poseSupplier = poseSupplier;
     shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    shooterMotorConfig.Feedback.SensorToMechanismRatio = 3.0/1.0; // 3:1 gearing
+
 
     shooterMotorConfig.CurrentLimits.StatorCurrentLimit = Constants.currentLimit;
     shooterMotorConfig.CurrentLimits.SupplyCurrentLimit = Constants.currentLimit;
@@ -69,6 +71,7 @@ public class Shooter extends SubsystemBase {
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     shooterMotor.getConfigurator().apply(shooterMotorConfig);
+
     
     for(int i = 0; i < Constants.shooterMapPoints.length; i++){
       shooterMap.put(Constants.shooterMapPoints[i][0], Constants.shooterMapPoints[i][1]);
@@ -114,6 +117,9 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterSpeed(double shooterSpeedRPM) {
+    if( shooterSpeedRPM > Constants.shooterMaxRPM) {
+      shooterSpeedRPM = Constants.shooterMaxRPM;
+    }
     shooterMotor.setControl(shooterVelocityVoltage.withVelocity(shooterSpeedRPM));
   }
 
