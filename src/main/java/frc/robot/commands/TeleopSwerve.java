@@ -279,6 +279,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -314,6 +315,8 @@ public class TeleopSwerve extends Command {
     double rotationVal = 0;
 
     double angleToGoal = 0;
+    double distToGoal = 0;
+    double correctedAngleToGoal = 0;
 
     Pose2d currentPos = new Pose2d(
         new Translation2d(0.0, 0.0),
@@ -377,6 +380,16 @@ public class TeleopSwerve extends Command {
             .getTranslation()
             .getAngle()
             .getMeasure();
+    }
+
+    public double getDistToGoal(){
+        Pose2d robotPos = s_Swerve.getEstimatedPosition();
+        Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
+
+        return goalPos
+                .relativeTo(robotPos)
+                .getTranslation()
+                .getNorm();
     }
                             
 
@@ -466,8 +479,10 @@ public class TeleopSwerve extends Command {
 
         if (aimTowardGoalSup.getAsBoolean()){
             angleToGoal = getAngleToGoal().in(Degrees);
+            distToGoal = getDistToGoal();
+            correctedAngleToGoal = Math.atan2(distToGoal, Constants.shooterBotOffset) + angleToGoal; // to correct for the shooter being offset form the center of the bot
             rotationVal = rotationPID.calculate(
-                angleToGoal,
+                correctedAngleToGoal,
                 0 //our target angle is zero because we are trying to make angle to goal value 0
             );
         }

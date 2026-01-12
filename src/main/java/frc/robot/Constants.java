@@ -25,8 +25,11 @@ public class Constants {
     public static final double shooterAutoAimI = 0.0;
     public static final double shooterAutoAimD = 0.0;
 
-
     public static final double shooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}}; //First array is distance values in meters to the goal, second array is target values for the shooter
+
+    public static final double shooterBotOffset = 0.3; // dist in meters between center of the bot and the center of the shooter. 
+
+
 
     public static final int IntakeMotorID = 15;
     public static final double intakeMotorPercentPower = 0.5;
