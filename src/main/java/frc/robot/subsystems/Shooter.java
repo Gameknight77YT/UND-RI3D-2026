@@ -29,8 +29,8 @@ import frc.robot.AllianceUtil;
 public class Shooter extends SubsystemBase {
   private final Supplier<Pose2d> poseSupplier;
 
-  private TalonFX TopShooterMotor = new TalonFX(Constants.TopSchooterMotorID);
-  private TalonFX BottomShooterMotor = new TalonFX(Constants.BottomShooterMotorID);
+  private TalonFX TopShooterMotor = new TalonFX(Constants.TopSchooterMotorID, Constants.CanBus);
+  private TalonFX BottomShooterMotor = new TalonFX(Constants.BottomShooterMotorID, Constants.CanBus);
 
   private TalonFXConfiguration topShooterConfig = new TalonFXConfiguration();
   private TalonFXConfiguration bottomShooterConfig = new TalonFXConfiguration();
@@ -54,6 +54,12 @@ public class Shooter extends SubsystemBase {
     this.poseSupplier = poseSupplier;
     topShooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     topShooterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+
+    topShooterConfig.CurrentLimits.StatorCurrentLimit = Constants.currentLimit;
+    topShooterConfig.CurrentLimits.SupplyCurrentLimit = Constants.currentLimit;
+    topShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    topShooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    topShooterConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = .2;
 
     /* Voltage-based velocity requires a velocity feed forward to account for the back-emf of the motor */
     topShooterConfig.Slot0.kS = 0.1; // To account for friction, add 0.1 V of static feedforward

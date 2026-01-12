@@ -55,8 +55,8 @@ public class SwerveModule {
         /* Angle Motor Config */
         mAngleMotor = new TalonFX(moduleConstants.angleMotorID, Constants.CanBus);
         mAngleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfig);
-        // mAngleMotor.getConfigurator().apply(currentLimits);
-        // mAngleMotor.getConfigurator().apply(rampRate);
+        mAngleMotor.getConfigurator().apply(currentLimits);
+        mAngleMotor.getConfigurator().apply(rampRate);
 
         resetToAbsolute();
 
@@ -66,8 +66,8 @@ public class SwerveModule {
         mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
         mDriveMotor.getConfigurator().setPosition(0.0);
 
-        // mDriveMotor.getConfigurator().apply(currentLimits);
-        // mDriveMotor.getConfigurator().apply(rampRate);
+        mDriveMotor.getConfigurator().apply(currentLimits);
+        mDriveMotor.getConfigurator().apply(rampRate);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){

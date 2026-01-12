@@ -15,12 +15,18 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class Intake extends SubsystemBase {
-  private TalonFX intakeMotor = new TalonFX(Constants.IntakeMotorID);
+  private TalonFX intakeMotor = new TalonFX(Constants.IntakeMotorID, Constants.CanBus);
   
   private TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
 
   /** Creates a new Intake. */
   public Intake() {
+    intakeConfig.CurrentLimits.StatorCurrentLimit = Constants.currentLimit;
+    intakeConfig.CurrentLimits.SupplyCurrentLimit = Constants.currentLimit;
+    intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    intakeConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    intakeConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = .2;
+
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     intakeConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

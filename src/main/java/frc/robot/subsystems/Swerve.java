@@ -23,6 +23,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
 //import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 //import com.pathplanner.lib.util.PIDConstants;
 //import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -60,7 +64,9 @@ public class Swerve extends SubsystemBase {
 
     private final Field2d mField2 = new Field2d();
 
-    //private final AutoBuilder teleopAutoBuilder = new AutoBuilder();
+    private RobotConfig config;
+
+    private final AutoBuilder teleopAutoBuilder = new AutoBuilder();
 
     public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
         new Translation2d(0.4064, 0.4064), 
@@ -195,7 +201,7 @@ public class Swerve extends SubsystemBase {
     this);
 
 
-    }
+    }*/
 
     private void configurePathPlanner() {
         // double driveBaseRadius = 0;
@@ -203,17 +209,26 @@ public class Swerve extends SubsystemBase {
         //     driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         // }
 
+        // Load the RobotConfig from the GUI settings. You should probably
+        // store this in your Constants file
+       
+        try{
+          config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+          // Handle exception as needed
+          e.printStackTrace();
+        }
 
-        AutoBuilder.configureHolonomic(
-            ()->this.getPose(), // Supplier of current robot pose
+
+        AutoBuilder.configure(
+            this::getPose, // Supplier of current robot pose
             this::setPose,  // Consumer for seeding pose against auto
             this::getCurrentRobotChassisSpeeds,
-            (speeds)->this.driveRobotRelative(speeds), // Consumer of ChassisSpeeds to drive the robot
-            new HolonomicPathFollowerConfig(new PIDConstants(15, 0, 0),
-                                            new PIDConstants(2.7, 0, 0),
-                                            5.76072,
-                                            0.4064,
-                                            new ReplanningConfig()),
+            (speeds, feedforwards) ->this.driveRobotRelative(speeds), // Consumer of ChassisSpeeds to drive the robot
+            new PPHolonomicDriveController(new PIDConstants(15, 0, 0),
+                                            new PIDConstants(2.7, 0, 0)
+            ),
+            config,
             ()->{
 
                 var alliance = DriverStation.getAlliance();
@@ -223,7 +238,7 @@ public class Swerve extends SubsystemBase {
                 return false;
             }, // Change this if the path needs to be flipped on red vs blue
             this); // Subsystem for requirements
-    }*/
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -298,7 +313,7 @@ public class Swerve extends SubsystemBase {
     }
 
 
-    /*public double calculateShuttleAngle(){
+    public double calculateShuttleAngle(){
         double xPos = m_poseEstimator.getEstimatedPosition().getX();
         double yPos = m_poseEstimator.getEstimatedPosition().getY();
 
@@ -363,7 +378,7 @@ public class Swerve extends SubsystemBase {
         }
 
         return 0;
-    }*/
+    }
 
 
     public void updateOdometry() {
@@ -447,9 +462,9 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("Drivetrain y position", m_poseEstimator.getEstimatedPosition().getY());
 
-        //SmartDashboard.putNumber("Shuttle distance", calculateShuttleDistance());
+        SmartDashboard.putNumber("Shuttle distance", calculateShuttleDistance());
 
-        //SmartDashboard.putNumber("Shuttle angle", calculateShuttleAngle());
+        SmartDashboard.putNumber("Shuttle angle", calculateShuttleAngle());
 
 
         for(SwerveModule mod : mSwerveMods){
