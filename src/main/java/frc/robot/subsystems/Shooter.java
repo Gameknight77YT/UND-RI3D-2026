@@ -125,6 +125,9 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     targetDistanceMeters = getDistToGoal();
+    if (targetDistanceMeters < Constants.minimumDistToGoal || targetDistanceMeters > Constants.maxDistToGoal){
+      targetDistanceMeters = Constants.defaultDistToGoal;
+    }
     targetRelativeAngle = getAngleToGoal();
 
     updateInterpolatedSpeeds();
