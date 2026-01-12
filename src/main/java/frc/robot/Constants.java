@@ -45,6 +45,11 @@ public class Constants {
     public static final double hopperExtenderEntensionPosIncrement = 0.05;
     public static final double hopperExtenderRetractionPosIncrement = -0.05;
 
+    public static final int feederMotorID = 18;
+    public static final double feederSpeed = .95;
+    
+    public static final double currentLimit = 35;
+
     
 public static final class Swerve {
         public static final int pigeonID = 13;

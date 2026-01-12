@@ -19,6 +19,7 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.HopperExtender;
 import frc.robot.subsystems.Swerve;
 
@@ -38,6 +39,7 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final HopperExtender hopperExtender = new HopperExtender();
   private final LED led = new LED();
+  private final Feeder feeder = new Feeder();
   
   public RobotContainer() {
     swerve.setDefaultCommand(
@@ -74,11 +76,18 @@ public class RobotContainer {
         () -> intake.StopMotor()
       ));
     /* Manipulator Controller Bindings */
-    manipulatorController.a().whileTrue(
+    manipulatorController.leftTrigger(.1).whileTrue(
       shooter.runEnd(
         () -> shooter.setShooterSpeedsInterpolated(), 
         () -> shooter.stopShooter()
     ));
+
+    manipulatorController.rightTrigger(.1).whileTrue(
+      feeder.runEnd(
+        () -> feeder.feed(Constants.feederSpeed), 
+        () -> feeder.stopFeeder()
+        )
+    );
 
     manipulatorController.rightBumper().whileTrue(
       hopperExtender.run(
