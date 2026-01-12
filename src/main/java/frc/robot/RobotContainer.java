@@ -25,7 +25,7 @@ import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
-  private final CommandXboxController manipulatorController = new CommandXboxController(1);
+  //private final CommandXboxController manipulatorController = new CommandXboxController(1);
  
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -48,8 +48,8 @@ public class RobotContainer {
                 () -> driverController.getRawAxis(translationAxis),
                 () -> driverController.getRawAxis(strafeAxis),
                 () -> -driverController.getRawAxis(rotationAxis),               
-                driverController.x(),
-                driverController.leftTrigger(.1)
+                driverController.start(),
+                driverController.a()
                 /*,
                 mShooterLimelight,
                 mIntakeLimelight*/
@@ -64,7 +64,9 @@ public class RobotContainer {
     /* Drive Controller Bindings */
     driverController.y().onTrue(Commands.runOnce(() -> swerve.zeroHeading()));
 
-    driverController.rightTrigger(.1).whileTrue(//Run intake forward
+    
+
+    driverController.leftBumper().whileTrue(//Run intake forward
       intake.runEnd(
         () -> intake.RunIntake(Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
@@ -75,9 +77,9 @@ public class RobotContainer {
         () -> intake.RunIntake(-Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
       ));
-      
+
     /* Manipulator Controller Bindings */
-    manipulatorController.rightTrigger(.1).whileTrue(
+    driverController.rightTrigger(.1).whileTrue(
       feeder.runEnd(
         () -> feeder.feed(Constants.feederSpeed), 
         () -> feeder.stopFeeder()
@@ -85,11 +87,13 @@ public class RobotContainer {
     );
 
 
-    manipulatorController.leftTrigger(.1).whileTrue(
+    driverController.leftTrigger(.1).whileTrue(
       shooter.runEnd(
-        () -> shooter.setShooterSpeed(1000), 
+        () -> shooter.setShooterSpeed(1000) ,
         () -> shooter.stopShooter()
     ));
+
+
     //Code that we should use to control shooter with toggle
 
     /*
