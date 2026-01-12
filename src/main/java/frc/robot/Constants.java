@@ -16,27 +16,22 @@ public class Constants {
     public static final String CanBus = "CTREDevicesCanivore";
 
     // Motor IDs
-    public static final int TopSchooterMotorID = 14;
-    public static final int BottomShooterMotorID = 15;
-    public static final double topShooterMotorPIDP = 0.1;
-    public static final double topShooterMotorPIDI = 0.0;
-    public static final double topShooterMotorPIDD = 0.0;
-    public static final double bottomShooterMotorPIDP = 0.1;
-    public static final double bottomShooterMotorPIDI = 0.0;
-    public static final double bottomShooterMotorPIDD = 0.0;
+    public static final int shooterMotorID = 14;
+    public static final double shooterMotorPIDP = 0.1;
+    public static final double shooterMotorPIDI = 0.0;
+    public static final double shooterMotorPIDD = 0.0;
 
     public static final double shooterAutoAimP = 0.1;
     public static final double shooterAutoAimI = 0.0;
     public static final double shooterAutoAimD = 0.0;
 
 
-    public static final double topSchooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}}; //First array is distance values in meters to the goal, second array is target values for the shooter
-    public static final double bottomSchooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}};
+    public static final double shooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}}; //First array is distance values in meters to the goal, second array is target values for the shooter
 
-    public static final int IntakeMotorID = 16;
+    public static final int IntakeMotorID = 15;
     public static final double intakeMotorPercentPower = 0.5;
 
-    public static final int hopperMotorID = 17;
+    public static final int hopperMotorID = 16;
     public static final double hopperExtenderPIDP = 0.1;
     public static final double hopperExtenderPIDI = 0.0;
     public static final double hopperExtenderPIDD = 0.0;
@@ -45,7 +40,7 @@ public class Constants {
     public static final double hopperExtenderEntensionPosIncrement = 0.05;
     public static final double hopperExtenderRetractionPosIncrement = -0.05;
 
-    public static final int feederMotorID = 18;
+    public static final int feederMotorID = 17;
     public static final double feederSpeed = .95;
     
     public static final double currentLimit = 35;

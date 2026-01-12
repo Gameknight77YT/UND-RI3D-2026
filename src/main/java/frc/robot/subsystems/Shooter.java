@@ -29,64 +29,52 @@ import frc.robot.AllianceUtil;
 public class Shooter extends SubsystemBase {
   private final Supplier<Pose2d> poseSupplier;
 
-  private TalonFX TopShooterMotor = new TalonFX(Constants.TopSchooterMotorID, Constants.CanBus);
-  private TalonFX BottomShooterMotor = new TalonFX(Constants.BottomShooterMotorID, Constants.CanBus);
+  private TalonFX shooterMotor = new TalonFX(Constants.shooterMotorID, Constants.CanBus);
 
-  private TalonFXConfiguration topShooterConfig = new TalonFXConfiguration();
-  private TalonFXConfiguration bottomShooterConfig = new TalonFXConfiguration();
+  private TalonFXConfiguration shooterMotorConfig = new TalonFXConfiguration();
 
-  private InterpolatingDoubleTreeMap topShooterMap = new InterpolatingDoubleTreeMap();
-  private InterpolatingDoubleTreeMap bottomShooterMap = new InterpolatingDoubleTreeMap();
+  private InterpolatingDoubleTreeMap shooterMap = new InterpolatingDoubleTreeMap();
 
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, use slot 0 */
-  private VelocityVoltage topVelocityVoltage = new VelocityVoltage(0).withSlot(0);
-  private VelocityVoltage bottomVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+  private VelocityVoltage shooterVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
   private double targetDistanceMeters = 0.0;
   private Angle targetRelativeAngle = Angle.ofBaseUnits(0, Degree);
 
-  private double topSpeedInterpolatedRPM = 0.0;
-  private double bottomSpeedInterpolatedRPM = 0.0;
+  private double speedInterpolatedRPM = 0.0;
 
   /** Creates a new Shooter. */
   public Shooter(Supplier<Pose2d> poseSupplier) {
     this.poseSupplier = poseSupplier;
-    topShooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    topShooterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    shooterMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-    topShooterConfig.CurrentLimits.StatorCurrentLimit = Constants.currentLimit;
-    topShooterConfig.CurrentLimits.SupplyCurrentLimit = Constants.currentLimit;
-    topShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    topShooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    topShooterConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = .2;
+    shooterMotorConfig.CurrentLimits.StatorCurrentLimit = Constants.currentLimit;
+    shooterMotorConfig.CurrentLimits.SupplyCurrentLimit = Constants.currentLimit;
+    shooterMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    shooterMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = .2;
 
     /* Voltage-based velocity requires a velocity feed forward to account for the back-emf of the motor */
-    topShooterConfig.Slot0.kS = 0.1; // To account for friction, add 0.1 V of static feedforward
-    topShooterConfig.Slot0.kV = 0.12; // Kraken X60 is a 500 kV motor, 500 rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / rotation per second
-    topShooterConfig.Slot0.kP = 0.11; // An error of 1 rotation per second results in 0.11 V output
-    topShooterConfig.Slot0.kI = 0; // No output for integrated error
-    topShooterConfig.Slot0.kD = 0; // No output for error derivative
+    shooterMotorConfig.Slot0.kS = 0.1; // To account for friction, add 0.1 V of static feedforward
+    shooterMotorConfig.Slot0.kV = 0.12; // Kraken X60 is a 500 kV motor, 500 rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / rotation per second
+    shooterMotorConfig.Slot0.kP = 0.11; // An error of 1 rotation per second results in 0.11 V output
+    shooterMotorConfig.Slot0.kI = 0; // No output for integrated error
+    shooterMotorConfig.Slot0.kD = 0; // No output for error derivative
     // Peak output of 8 volts
-    topShooterConfig.Voltage.withPeakForwardVoltage(Volts.of(8))
+    shooterMotorConfig.Voltage.withPeakForwardVoltage(Volts.of(8))
       .withPeakReverseVoltage(Volts.of(-8));
 
-    topShooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    bottomShooterConfig = topShooterConfig;
-    bottomShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    TopShooterMotor.getConfigurator().apply(topShooterConfig);
-    BottomShooterMotor.getConfigurator().apply(bottomShooterConfig);
+    shooterMotor.getConfigurator().apply(shooterMotorConfig);
     
-    for(int i = 0; i < Constants.topSchooterMapPoints.length; i++){
-      topShooterMap.put(Constants.topSchooterMapPoints[i][0], Constants.topSchooterMapPoints[i][1]);
-    }
-    for(int i = 0; i < Constants.bottomSchooterMapPoints.length; i++){
-      bottomShooterMap.put(Constants.bottomSchooterMapPoints[i][0], Constants.bottomSchooterMapPoints[i][1]);
+    for(int i = 0; i < Constants.shooterMapPoints.length; i++){
+      shooterMap.put(Constants.shooterMapPoints[i][0], Constants.shooterMapPoints[i][1]);
     }
     // Populate shooter maps
     //TODO: topShooterMap.put(0,0); done 
-    //TODO: bottomShooterMap.put(0,0); done
 
       
   }
@@ -96,8 +84,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void updateInterpolatedSpeeds() {
-    topSpeedInterpolatedRPM = topShooterMap.get(targetDistanceMeters);
-    bottomSpeedInterpolatedRPM = bottomShooterMap.get(targetDistanceMeters);
+    speedInterpolatedRPM = shooterMap.get(targetDistanceMeters);
   }
 
   public double getDistToGoal(){
@@ -123,17 +110,15 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterSpeedsInterpolated() {
     
-    setShooterSpeeds(topSpeedInterpolatedRPM, bottomSpeedInterpolatedRPM);
+    setShooterSpeeds(speedInterpolatedRPM);
   }
 
-  public void setShooterSpeeds(double topShooterSpeedRPM, double bottomShooterSpeed) {
-    TopShooterMotor.setControl(topVelocityVoltage.withVelocity(topShooterSpeedRPM));
-    BottomShooterMotor.setControl(bottomVelocityVoltage.withVelocity(bottomShooterSpeed));
+  public void setShooterSpeeds(double topShooterSpeedRPM) {
+    shooterMotor.setControl(shooterVelocityVoltage.withVelocity(topShooterSpeedRPM));
   }
 
   public void stopShooter() {
-    TopShooterMotor.stopMotor();
-    BottomShooterMotor.stopMotor();
+    shooterMotor.stopMotor();
   }
 
   @Override
@@ -144,11 +129,9 @@ public class Shooter extends SubsystemBase {
 
     updateInterpolatedSpeeds();
 
-    SmartDashboard.putNumber("Top Shooter Velocity RPM", TopShooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
-    SmartDashboard.putNumber("Bottom Shooter Velocity RPM", BottomShooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
+    SmartDashboard.putNumber("Top Shooter Velocity RPM", shooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
 
-    SmartDashboard.putNumber("Top Shooter Interpolated RPM", topSpeedInterpolatedRPM);
-    SmartDashboard.putNumber("Bottom Shooter Interpolated RPM", bottomSpeedInterpolatedRPM);
+    SmartDashboard.putNumber("Top Shooter Interpolated RPM", speedInterpolatedRPM);
 
   }
 }
