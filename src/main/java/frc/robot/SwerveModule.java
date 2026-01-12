@@ -25,7 +25,7 @@ public class SwerveModule {
     private TalonFX mAngleMotor;
     private TalonFX mDriveMotor;
     private CANcoder angleEncoder;
-    private String CanBus = "CTREDevicesCanivore";
+    
 
     private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
@@ -49,11 +49,11 @@ public class SwerveModule {
         rampRate.withDutyCycleOpenLoopRampPeriod(0.3);
         
         /* Angle Encoder Config */
-        angleEncoder = new CANcoder(moduleConstants.cancoderID, CanBus);
+        angleEncoder = new CANcoder(moduleConstants.cancoderID, Constants.CanBus);
         angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig);
 
         /* Angle Motor Config */
-        mAngleMotor = new TalonFX(moduleConstants.angleMotorID, CanBus);
+        mAngleMotor = new TalonFX(moduleConstants.angleMotorID, Constants.CanBus);
         mAngleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfig);
         // mAngleMotor.getConfigurator().apply(currentLimits);
         // mAngleMotor.getConfigurator().apply(rampRate);
@@ -62,7 +62,7 @@ public class SwerveModule {
 
 
         /* Drive Motor Config */
-        mDriveMotor = new TalonFX(moduleConstants.driveMotorID, CanBus);
+        mDriveMotor = new TalonFX(moduleConstants.driveMotorID, Constants.CanBus);
         mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
         mDriveMotor.getConfigurator().setPosition(0.0);
 

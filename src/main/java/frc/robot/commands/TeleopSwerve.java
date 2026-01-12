@@ -342,17 +342,17 @@ public class TeleopSwerve extends Command {
     private final MiniPID mPID = new MiniPID(kP, kI, kD);
         
     
-        public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
-            DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier aimTowardGoalSup/*, 
-            ShooterLimelight shooterLimelight, IntakeLimelight intakeLimelight*/) {
-            this.s_Swerve = s_Swerve;
-            addRequirements(s_Swerve);
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
+        DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier aimTowardGoalSup/*, 
+        ShooterLimelight shooterLimelight, IntakeLimelight intakeLimelight*/) {
+        this.s_Swerve = s_Swerve;
+        addRequirements(s_Swerve);
     
-            this.translationSup = translationSup;
-            this.strafeSup = strafeSup;
-            this.rotationSup = rotationSup;
-            this.robotCentricSup = robotCentricSup;
-            this.aimTowardGoalSup = aimTowardGoalSup;
+        this.translationSup = translationSup;
+        this.strafeSup = strafeSup;
+        this.rotationSup = rotationSup;
+        this.robotCentricSup = robotCentricSup;
+        this.aimTowardGoalSup = aimTowardGoalSup;
         currentYaw = s_Swerve.getGyroYaw().getDegrees();
         currentPos = s_Swerve.getEstimatedPosition();
         //mShooterLimelight = shooterLimelight;
@@ -464,7 +464,7 @@ public class TeleopSwerve extends Command {
             rotationVal = rotationCorrect;
         }
 
-        if (aimTowardGoalSup.getAsBoolean() == true){
+        if (aimTowardGoalSup.getAsBoolean()){
             angleToGoal = getAngleToGoal().in(Degrees);
             rotationVal = rotationPID.calculate(
                 angleToGoal,
