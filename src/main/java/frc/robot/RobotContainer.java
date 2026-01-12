@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.HopperExtender;
 import frc.robot.subsystems.Swerve;
 
@@ -36,6 +37,7 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter(swerve::getEstimatedPosition);
   private final Intake intake = new Intake();
   private final HopperExtender hopperExtender = new HopperExtender();
+  private final LED led = new LED();
   
   public RobotContainer() {
     swerve.setDefaultCommand(
