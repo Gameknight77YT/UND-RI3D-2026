@@ -110,11 +110,11 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterSpeedsInterpolated() {
     
-    setShooterSpeeds(speedInterpolatedRPM);
+    setShooterSpeed(speedInterpolatedRPM);
   }
 
-  public void setShooterSpeeds(double topShooterSpeedRPM) {
-    shooterMotor.setControl(shooterVelocityVoltage.withVelocity(topShooterSpeedRPM));
+  public void setShooterSpeed(double shooterSpeedRPM) {
+    shooterMotor.setControl(shooterVelocityVoltage.withVelocity(shooterSpeedRPM));
   }
 
   public void stopShooter() {

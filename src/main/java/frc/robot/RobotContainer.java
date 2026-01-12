@@ -37,7 +37,7 @@ public class RobotContainer {
   private final Swerve swerve = new Swerve();
   private final Shooter shooter = new Shooter(swerve::getEstimatedPosition);
   private final Intake intake = new Intake();
-  private final HopperExtender hopperExtender = new HopperExtender();
+  //private final HopperExtender hopperExtender = new HopperExtender();
   private final LED led = new LED();
   private final Feeder feeder = new Feeder();
   
@@ -78,7 +78,7 @@ public class RobotContainer {
     /* Manipulator Controller Bindings */
     manipulatorController.leftTrigger(.1).whileTrue(
       shooter.runEnd(
-        () -> shooter.setShooterSpeedsInterpolated(), 
+        () -> shooter.setShooterSpeed(1000), 
         () -> shooter.stopShooter()
     ));
 
@@ -89,15 +89,15 @@ public class RobotContainer {
         )
     );
 
-    manipulatorController.rightBumper().whileTrue(
-      hopperExtender.run(
-        () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderEntensionPosIncrement)
-    ));
-
-    manipulatorController.leftBumper().whileTrue(
-      hopperExtender.run(
-        () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderRetractionPosIncrement)
-    ));
+    //manipulatorController.rightBumper().whileTrue(
+    //  hopperExtender.run(
+    //    () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderEntensionPosIncrement)
+    //));
+//
+    //manipulatorController.leftBumper().whileTrue(
+    //  hopperExtender.run(
+    //    () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderRetractionPosIncrement)
+    //));
 
   }
 
