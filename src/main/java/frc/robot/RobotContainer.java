@@ -96,11 +96,15 @@ public class RobotContainer {
 
     //Code that we should use to control shooter with toggle
 
-    /*
-    manipulatorController.leftTrigger(.1).onTrue(
-      Commands.runOnce(() -> shooter.shooterToggleCommand())
+    
+    driverController.leftTrigger(.1).whileTrue(
+      Commands.run(() -> shooter.startShooterCommand())
     );
-    */
+
+    driverController.leftTrigger(.1).onFalse(
+      Commands.runOnce(() -> shooter.stopShooter())
+    );
+    
 
 
 

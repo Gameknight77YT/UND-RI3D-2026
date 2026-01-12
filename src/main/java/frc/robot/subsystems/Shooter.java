@@ -123,24 +123,23 @@ public class Shooter extends SubsystemBase {
       shooterSpeedRPM = Constants.shooterMaxRPM;
     }
     shooterMotor.setControl(shooterVelocityVoltage.withVelocity(shooterSpeedRPM));
-    isRunning = true;
   }
 
   public void stopShooter() {
     shooterMotor.stopMotor();
-    isRunning = false;
   }
 
-  public Command shooterToggleCommand() {
-    return runOnce(() -> {
-      if (isRunning) {
-        stopShooter();
-      } else {
-        setShooterSpeed(speedInterpolatedRPM);
-      }
+  public Command startShooterCommand() {
+    return run(() -> {
+      setShooterSpeedsInterpolated();
     });
   }
-
+  public Command stopShooterCommand() {
+    return runOnce(() -> {
+      stopShooter();
+    });
+  }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
