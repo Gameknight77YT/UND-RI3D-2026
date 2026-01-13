@@ -83,6 +83,8 @@ public class Swerve extends SubsystemBase {
 
         
 
+        
+
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -406,7 +408,7 @@ public class Swerve extends SubsystemBase {
 
       if(!doRejectUpdate)
       {
-        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,.5));
         m_poseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);
@@ -454,9 +456,9 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("Drivetrain y position", m_poseEstimator.getEstimatedPosition().getY());
 
-        SmartDashboard.putNumber("Shuttle distance", calculateShuttleDistance());
+        //SmartDashboard.putNumber("Shuttle distance", calculateShuttleDistance());
 
-        SmartDashboard.putNumber("Shuttle angle", calculateShuttleAngle());
+        //SmartDashboard.putNumber("Shuttle angle", calculateShuttleAngle());
 
 
         for(SwerveModule mod : mSwerveMods){

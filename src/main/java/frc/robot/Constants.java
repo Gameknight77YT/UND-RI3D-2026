@@ -21,11 +21,14 @@ public class Constants {
     public static final double shooterMotorPIDI = 0.0;
     public static final double shooterMotorPIDD = 0.0;
 
-    public static final double shooterAutoAimP = 0.1;
+    public static final double shooterAutoAimP = 0.02;
     public static final double shooterAutoAimI = 0.0;
     public static final double shooterAutoAimD = 0.0;
 
-    public static final double shooterMapPoints[][] = {{1, 2, 3}, {2000, 3000, 4000}}; //First array is distance values in meters to the goal, second array is target values for the shooter
+    public static final double shooterMapPoints[][] = {
+        {1.703, 2.01, 2.29, 2.61, 2.95, 3.45, 4.05, 4.5, 5.08, 5.6, 6.31},
+        {41.0, 42.0, 43.0, 48.0, 50.0, 51.0, 55.5, 57.0, 61.0, 64.0, 70.0}}; 
+        //First array is distance values in meters to the goal, second array is target values for the shooter
 
     public static final double shooterBotOffset = 0.3; // dist in meters between center of the bot and the center of the shooter. 
 
@@ -40,16 +43,16 @@ public class Constants {
     public static final double hopperExtenderPIDP = 0.1;
     public static final double hopperExtenderPIDI = 0.0;
     public static final double hopperExtenderPIDD = 0.0;
-    public static final double hopperExtenderFullExtendedEncoderPosition = 0.0;
-    public static final double hopperExtenderFullRetractedEncoderPosition = 20.0;
-    public static final double hopperExtenderEntensionPosIncrement = 0.05;
-    public static final double hopperExtenderRetractionPosIncrement = -0.05;
+    public static final double hopperExtenderFullExtendedEncoderPosition = -20.0;
+    public static final double hopperExtenderFullRetractedEncoderPosition = 0.0;
+    public static final double hopperExtenderEntensionPosIncrement = -0.2;
+    public static final double hopperExtenderRetractionPosIncrement = 0.2;
 
     public static final int feederMotorID = 17;
     public static final double feederSpeed = .95;
     
     public static final double currentLimit = 35;
-    public static final double shooterMaxRPM = 2000;
+    public static final double shooterMaxRPM = 75;
 
     
 public static final class Swerve {

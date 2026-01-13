@@ -25,7 +25,7 @@ import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
-  //private final CommandXboxController manipulatorController = new CommandXboxController(1);
+  private final CommandXboxController manipulatorController = new CommandXboxController(1);
  
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -37,9 +37,11 @@ public class RobotContainer {
   private final Swerve swerve = new Swerve();
   private final Shooter shooter = new Shooter(swerve::getEstimatedPosition);
   private final Intake intake = new Intake();
-  //private final HopperExtender hopperExtender = new HopperExtender();
+  private final HopperExtender hopperExtender = new HopperExtender();
   private final LED led = new LED();
   private final Feeder feeder = new Feeder();
+
+ 
   
   public RobotContainer() {
     swerve.setDefaultCommand(
@@ -56,7 +58,7 @@ public class RobotContainer {
             )
         );
 
-
+    
     configureBindings();
   }
 
@@ -66,60 +68,54 @@ public class RobotContainer {
 
     
 
-    driverController.leftBumper().whileTrue(//Run intake forward
+    driverController.rightTrigger(.2).whileTrue(//Run intake forward
       intake.runEnd(
         () -> intake.RunIntake(Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
       ));
 
-    driverController.rightBumper().whileTrue( //Run intake in reverse
+    driverController.leftTrigger(.2).whileTrue( //Run intake in reverse
       intake.runEnd(
         () -> intake.RunIntake(-Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
       ));
 
     /* Manipulator Controller Bindings */
-    driverController.rightTrigger(.1).whileTrue(
+    manipulatorController.rightTrigger(.2).whileTrue(
       feeder.runEnd(
         () -> feeder.feed(Constants.feederSpeed), 
         () -> feeder.stopFeeder()
         )
     );
 
+    manipulatorController.rightBumper().whileTrue(
+      feeder.runEnd(
+        () -> feeder.feed(-Constants.feederSpeed), 
+        () -> feeder.stopFeeder()
+        )
+    );
 
-    driverController.leftTrigger(.1).whileTrue(
+
+    manipulatorController.leftTrigger(.2).whileTrue(
       shooter.runEnd(
-        () -> shooter.setShooterSpeed(1000) ,
+        () -> shooter.setShooterSpeedsInterpolated(),
         () -> shooter.stopShooter()
     ));
 
 
-    //Code that we should use to control shooter with toggle
-
-    
-    driverController.leftTrigger(.1).whileTrue(
-      Commands.run(() -> shooter.startShooterCommand())
-    );
-
-    driverController.leftTrigger(.1).onFalse(
-      Commands.runOnce(() -> shooter.stopShooter())
-    );
-    
 
 
 
 
+    manipulatorController.povRight().whileTrue(
+      hopperExtender.run(
+        () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderEntensionPosIncrement)
+    ));
 
-
-    //manipulatorController.rightBumper().whileTrue(
-    //  hopperExtender.run(
-    //    () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderEntensionPosIncrement)
-    //));
-//
-    //manipulatorController.leftBumper().whileTrue(
-    //  hopperExtender.run(
-    //    () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderRetractionPosIncrement)
-    //));
+    manipulatorController.povLeft().whileTrue(
+      hopperExtender.run(
+        () -> hopperExtender.IncrementPositionTarget(Constants.hopperExtenderRetractionPosIncrement)
+    ));
 
   }
 

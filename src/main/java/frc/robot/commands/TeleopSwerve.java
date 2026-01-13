@@ -279,6 +279,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inch;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.util.function.BooleanSupplier;
@@ -287,9 +288,11 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -375,8 +378,15 @@ public class TeleopSwerve extends Command {
         Pose2d robotPos = s_Swerve.getEstimatedPosition();
         Pose2d goalPos = AllianceUtil.GetAllianceGoalPos();
 
+        Pose2d shooterPos = robotPos.transformBy(new Transform2d(
+            Distance.ofRelativeUnits(-11, Inch), 
+            Distance.ofRelativeUnits(-6, Inch), 
+            Rotation2d.fromDegrees(0.0)));
+
+        SmartDashboard.putString("Robot Pos", robotPos.toString());
+        SmartDashboard.putString("Goal Pos", goalPos.toString());
         return goalPos
-            .relativeTo(robotPos)
+            .relativeTo(shooterPos)
             .getTranslation()
             .getAngle()
             .getMeasure()
@@ -478,14 +488,20 @@ public class TeleopSwerve extends Command {
             rotationVal = rotationCorrect;
         }
 
+        angleToGoal = getAngleToGoal();
+        distToGoal = getDistToGoal();
+        correctedAngleToGoal = angleToGoal;//Math.atan2(distToGoal, Constants.shooterBotOffset) + angleToGoal; // to correct for the shooter being offset form the center of the bot
+
+        SmartDashboard.putNumber("Angle To Goal", correctedAngleToGoal);
+
         if (aimTowardGoalSup.getAsBoolean()){
-            angleToGoal = getAngleToGoal();
-            distToGoal = getDistToGoal();
-            correctedAngleToGoal = Math.atan2(distToGoal, Constants.shooterBotOffset) + angleToGoal; // to correct for the shooter being offset form the center of the bot
+            
             rotationVal = rotationPID.calculate(
                 correctedAngleToGoal,
                 0 //our target angle is zero because we are trying to make angle to goal value 0
-            );
+            ) * -1;
+            
+            
         }
 
         if (rotationVal > 1){rotationVal = 1;}

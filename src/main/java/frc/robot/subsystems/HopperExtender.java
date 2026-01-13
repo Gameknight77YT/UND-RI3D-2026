@@ -33,7 +33,7 @@ public class HopperExtender extends SubsystemBase {
     closedLoopController = motor.getClosedLoopController();
     encoder = motor.getEncoder();
     motorConfig = new SparkFlexConfig();
-
+    
     motorConfig.encoder
     .positionConversionFactor(1)
     .velocityConversionFactor(1);
@@ -49,23 +49,24 @@ public class HopperExtender extends SubsystemBase {
       .p(Constants.hopperExtenderPIDP)
       .i(Constants.hopperExtenderPIDI)
       .d(Constants.hopperExtenderPIDD)
-      .outputRange(-1, 1)
+      .outputRange(-.1, .1)
       // Set PID values for velocity control in slot 1
       .p(0.0001, ClosedLoopSlot.kSlot1)
       .i(0, ClosedLoopSlot.kSlot1)
       .d(0, ClosedLoopSlot.kSlot1)
       .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
-      .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
+      .outputRange(-1, 1, ClosedLoopSlot.kSlot1)
+      ;
     
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
+    
     ResetEncoder();
   }
 
   public double SetPositionTarget(double setTargetPosition){
     //Bounds check
-    if(setTargetPosition > Constants.hopperExtenderFullExtendedEncoderPosition){setTargetPosition = Constants.hopperExtenderFullExtendedEncoderPosition;}
-    if(setTargetPosition < Constants.hopperExtenderFullExtendedEncoderPosition){setTargetPosition = Constants.hopperExtenderFullRetractedEncoderPosition;}
+    if(setTargetPosition < Constants.hopperExtenderFullExtendedEncoderPosition){setTargetPosition = Constants.hopperExtenderFullExtendedEncoderPosition;}
+    if(setTargetPosition > Constants.hopperExtenderFullRetractedEncoderPosition){setTargetPosition = Constants.hopperExtenderFullRetractedEncoderPosition;}
     targetPosition = setTargetPosition;
     closedLoopController.setSetpoint(setTargetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 

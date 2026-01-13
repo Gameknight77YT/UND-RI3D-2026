@@ -38,20 +38,22 @@ public class Shooter extends SubsystemBase {
 
   private InterpolatingDoubleTreeMap shooterMap = new InterpolatingDoubleTreeMap();
 
-  /* Be able to switch which control request to use based on a button press */
+  
   /* Start at velocity 0, use slot 0 */
   private VelocityVoltage shooterVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
-  private double targetDistanceMeters = 0.0;
 
   private double speedInterpolatedRPM = 0.0;
 
+  //private double tempSpeed = 0;
   /** Creates a new Shooter. */
   public Shooter(Supplier<Pose2d> poseSupplier) {
+
+    //SmartDashboard.putNumber("tempSpeed", 0);
+
     this.poseSupplier = poseSupplier;
     shooterMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    shooterMotorConfig.Feedback.SensorToMechanismRatio = 3.0/1.0; // 3:1 gearing
 
 
     shooterMotorConfig.CurrentLimits.StatorCurrentLimit = Constants.currentLimit;
@@ -75,8 +77,8 @@ public class Shooter extends SubsystemBase {
     shooterMotor.getConfigurator().apply(shooterMotorConfig);
 
     
-    for(int i = 0; i < Constants.shooterMapPoints.length; i++){
-      shooterMap.put(Constants.shooterMapPoints[i][0], Constants.shooterMapPoints[i][1]);
+    for(int i = 0; i < Constants.shooterMapPoints[0].length; i++){
+      shooterMap.put(Constants.shooterMapPoints[0][i], Constants.shooterMapPoints[1][i]);
     }
     // Populate shooter maps
     //TODO: topShooterMap.put(0,0); done 
@@ -84,12 +86,11 @@ public class Shooter extends SubsystemBase {
       
   }
 
-  public void setTargetDistanceMeters(double distanceMeters) {
-    targetDistanceMeters = distanceMeters;
-  }
+  
+  
 
   public void updateInterpolatedSpeeds() {
-    speedInterpolatedRPM = shooterMap.get(targetDistanceMeters);
+    speedInterpolatedRPM = shooterMap.get(getDistToGoal());
   }
 
   public double getDistToGoal(){
@@ -104,6 +105,7 @@ public class Shooter extends SubsystemBase {
 
 
   public void setShooterSpeedsInterpolated() {
+    updateInterpolatedSpeeds();
     setShooterSpeed(speedInterpolatedRPM);
   }
 
@@ -112,13 +114,15 @@ public class Shooter extends SubsystemBase {
       shooterSpeedRPM = Constants.shooterMaxRPM;
     }
     shooterMotor.setControl(shooterVelocityVoltage.withVelocity(shooterSpeedRPM));
+
+    //shooterMotor.setControl(shooterVelocityVoltage.withVelocity(SmartDashboard.getNumber("tempSpeed", 0)));
   }
 
   public void stopShooter() {
     shooterMotor.stopMotor();
   }
 
-  public Command startShooterCommand() {
+  /*public Command startShooterCommand() {
     return run(() -> {
       setShooterSpeedsInterpolated();
     });
@@ -127,23 +131,23 @@ public class Shooter extends SubsystemBase {
     return runOnce(() -> {
       stopShooter();
     });
-  }
+  }*/
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    targetDistanceMeters = getDistToGoal();
-    if (targetDistanceMeters < Constants.minimumDistToGoal || targetDistanceMeters > Constants.maxDistToGoal){
+    /*if (targetDistanceMeters < Constants.minimumDistToGoal || targetDistanceMeters > Constants.maxDistToGoal){
       targetDistanceMeters = Constants.defaultDistToGoal;
-    }
+    }*/
 
     updateInterpolatedSpeeds();
 
+    SmartDashboard.putNumber("distance", getDistToGoal());
 
+    SmartDashboard.putNumber("Shooter Velocity RPM", shooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
 
-    SmartDashboard.putNumber("Top Shooter Velocity RPM", shooterMotor.getVelocity().getValue().in(RevolutionsPerSecond));
+    SmartDashboard.putNumber("Shooter Interpolated RPM", speedInterpolatedRPM);
 
-    SmartDashboard.putNumber("Top Shooter Interpolated RPM", speedInterpolatedRPM);
-
+    
   }
 }
