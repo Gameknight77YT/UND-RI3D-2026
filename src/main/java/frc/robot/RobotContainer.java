@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController manipulatorController = new CommandXboxController(1);
+  private final CommandXboxController ledController = new CommandXboxController(2);
  
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -73,6 +75,17 @@ public class RobotContainer {
         () -> intake.RunIntake(Constants.intakeMotorPercentPower),
         () -> intake.StopMotor()
       ));
+    driverController.rightTrigger(.2).onTrue(
+      led.runOnce(() -> led.setIsIntaking(true))
+      );
+
+    driverController.rightTrigger(.2).onFalse(
+      led.runOnce(() -> led.setIsIntaking(false))
+      );
+    driverController.rightTrigger(.2).onFalse(
+      led.runOnce(() -> led.setStopBreathing(true))
+      );
+    
 
     driverController.leftTrigger(.2).whileTrue( //Run intake in reverse
       intake.runEnd(
@@ -87,6 +100,16 @@ public class RobotContainer {
         () -> feeder.stopFeeder()
         )
     );
+    manipulatorController.rightTrigger(.2).onTrue(
+      led.runOnce(() -> led.setIsShooting(true))
+      );
+
+    manipulatorController.rightTrigger(.2).onFalse(
+      led.runOnce(() -> led.setIsShooting(false))
+      );
+    manipulatorController.rightTrigger(.2).onFalse(
+      led.runOnce(() -> led.setStopBreathing(true))
+      );
 
     manipulatorController.rightBumper().whileTrue(
       feeder.runEnd(
@@ -101,8 +124,6 @@ public class RobotContainer {
         () -> shooter.setShooterSpeedsInterpolated(),
         () -> shooter.stopShooter()
     ));
-
-
 
 
 
