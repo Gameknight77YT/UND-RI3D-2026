@@ -52,7 +52,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public void feed(double speed) {
-    feeder.setControl(feederVelocityVoltage.withVelocity(speed*65));
+    feeder.setControl(feederVelocityVoltage.withVelocity(speed*70));
 
   }
 

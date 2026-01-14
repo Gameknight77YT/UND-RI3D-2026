@@ -90,7 +90,7 @@ public class Shooter extends SubsystemBase {
   
 
   public void updateInterpolatedSpeeds() {
-    speedInterpolatedRPM = shooterMap.get(getDistToGoal());
+    speedInterpolatedRPM = shooterMap.get(getDistToGoal())*1.07;
   }
 
   public double getDistToGoal(){

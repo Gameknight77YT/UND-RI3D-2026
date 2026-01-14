@@ -189,9 +189,14 @@ public boolean isBreathing() {
 public void periodic() {
 
 
+    /*if(DriverStation.isDisabled()){
+        stopBreathing();
+        stopBreathing = false;
 
+        setWhite();
+    }
 
-    if(isShooting && !breathing){
+    else*/ if(isShooting && !breathing){
         startBreathing(0, 255, 0, .25);
     }
 
@@ -214,10 +219,7 @@ public void periodic() {
         setGreen();
     }
 
-    if(DriverStation.isDisabled()){
-        stopBreathing();
-        setYellow();
-    }
+    
 
     led.setData(ledBuffer);
 }
