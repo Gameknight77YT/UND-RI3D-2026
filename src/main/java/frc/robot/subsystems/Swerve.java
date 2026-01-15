@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -60,11 +61,13 @@ public class Swerve extends SubsystemBase {
 
     private final AutoBuilder teleopAutoBuilder = new AutoBuilder();
 
-    public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
-        new Translation2d(0.4064, 0.4064), 
-        new Translation2d(0.381, -0.381), 
-        new Translation2d(-0.381, 0.381), 
-        new Translation2d(-0.381, -0.381));
+    //public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+    //    new Translation2d(0.4064, 0.4064), 
+    //    new Translation2d(0.381, -0.381), 
+    //    new Translation2d(-0.381, 0.381), 
+    //    new Translation2d(-0.381, -0.381));
+
+    //this is already declared in Constants.Swerve.swerveKinematics --- IGNORE 
 
     public final SwerveDrivePoseEstimator m_poseEstimator;
 
@@ -73,7 +76,8 @@ public class Swerve extends SubsystemBase {
 
 
     public Swerve() {
-        gyro = new Pigeon2(Constants.Swerve.pigeonID, Constants.CanBus);
+        gyro = new Pigeon2(Constants.Swerve.pigeonID, new CANBus(Constants.CanBus));
+        
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
 
@@ -98,7 +102,7 @@ public class Swerve extends SubsystemBase {
         //this.configurePathPlanner();
 
         m_poseEstimator = new SwerveDrivePoseEstimator(
-          m_kinematics,
+          Constants.Swerve.swerveKinematics,
           new Rotation2d(0),
           getModulePositions(),
           new Pose2d(),
@@ -266,7 +270,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-        return m_kinematics.toChassisSpeeds(getModuleStates());
+        return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     public Pose2d getPose() {
