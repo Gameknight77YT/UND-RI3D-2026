@@ -509,8 +509,8 @@ public class TeleopSwerve extends Command {
 
         if (isShake.getAsBoolean()) {
             // simple time-based oscillation to shake balls loose
-            double shakeAmplitude = 0.6; // max added rotation (-1..1)
-            double shakeFrequencyHz = 3.0; // shakes per second
+            double shakeAmplitude = 1.0; // max added rotation (-1..1)
+            double shakeFrequencyHz = 4.0; // shakes per second
             double nowSec = System.currentTimeMillis() / 1000.0;
             double shake = shakeAmplitude * Math.sin(2.0 * Math.PI * shakeFrequencyHz * nowSec);
             // add shake to current rotation command so driver input is preserved
