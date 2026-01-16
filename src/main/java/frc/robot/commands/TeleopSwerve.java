@@ -346,10 +346,12 @@ public class TeleopSwerve extends Command {
     double kD = 0;
 
     private final MiniPID mPID = new MiniPID(kP, kI, kD);
+
+    private final BooleanSupplier isShake;
         
     
     public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
-        DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier aimTowardGoalSup/*, 
+        DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier aimTowardGoalSup, BooleanSupplier isShake/*, 
         ShooterLimelight shooterLimelight, IntakeLimelight intakeLimelight*/) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
@@ -359,6 +361,7 @@ public class TeleopSwerve extends Command {
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
         this.aimTowardGoalSup = aimTowardGoalSup;
+        this.isShake = isShake;
         currentYaw = s_Swerve.getGyroYaw().getDegrees();
         currentPos = s_Swerve.getEstimatedPosition();
         //mShooterLimelight = shooterLimelight;
@@ -501,6 +504,18 @@ public class TeleopSwerve extends Command {
                 0 //our target angle is zero because we are trying to make angle to goal value 0
             ) * -1;
             
+            
+        }
+
+        if (isShake.getAsBoolean()) {
+            // simple time-based oscillation to shake balls loose
+            double shakeAmplitude = 0.6; // max added rotation (-1..1)
+            double shakeFrequencyHz = 3.0; // shakes per second
+            double nowSec = System.currentTimeMillis() / 1000.0;
+            double shake = shakeAmplitude * Math.sin(2.0 * Math.PI * shakeFrequencyHz * nowSec);
+            // add shake to current rotation command so driver input is preserved
+            rotationVal += shake;
+
             
         }
 

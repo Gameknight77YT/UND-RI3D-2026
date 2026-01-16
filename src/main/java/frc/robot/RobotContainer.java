@@ -53,7 +53,8 @@ public class RobotContainer {
                 () -> driverController.getRawAxis(strafeAxis),
                 () -> -driverController.getRawAxis(rotationAxis),               
                 driverController.start(),
-                driverController.a()
+                driverController.a(),
+                driverController.b()
                 /*,
                 mShooterLimelight,
                 mIntakeLimelight*/
